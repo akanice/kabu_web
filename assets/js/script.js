@@ -1,4 +1,15 @@
 $(document).ready(function() {
+	$('body').append('<div id="backtotop"></div>');
+		$(window).scroll(function() {
+			if($(window).scrollTop() >200) {
+				$('#backtotop').fadeIn();
+			} else {
+				$('#backtotop').fadeOut();
+			}
+		});
+		$('#backtotop').click(function() {
+		$('html, body').animate({scrollTop:0},500);
+	});
 	$(".bt_menusb").on("click", function(e){					
 		var xtarget = $(this).data("target");
 		$(xtarget).addClass( "open" );
@@ -38,7 +49,7 @@ $(document).ready(function() {
 		$('.header-style1 .header-mid .sticky-search').toggleClass("open");
 	});
 }); 
-
+	
 function copyClipboard() {
 	var copyText = document.getElementById("share_link_input");
 	copyText.select();

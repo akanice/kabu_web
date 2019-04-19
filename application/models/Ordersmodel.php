@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class ordersModel extends MY_Model {
+class OrdersModel extends MY_Model {
     protected $tableName = 'orders';
 
     protected $table = array(
@@ -24,11 +24,6 @@ class ordersModel extends MY_Model {
             'nullable'  => true,
             'type'      => 'integer'
         ),
-        'birth_expect' => array(
-            'isIndex'   => false,
-            'nullable'  => false,
-            'type'      => 'integer'
-        ),
         'note' => array(
             'isIndex'   => false,
             'nullable'  => true,
@@ -37,11 +32,6 @@ class ordersModel extends MY_Model {
         'affiliate_transaction_id' => array(
             'isIndex'   => false,
             'nullable'  => true,
-            'type'      => 'integer'
-        ),
-        'landingpage_id' => array(
-            'isIndex'   => false,
-            'nullable'  => false,
             'type'      => 'integer'
         ),
 		'total_price' => array(
@@ -82,14 +72,9 @@ class ordersModel extends MY_Model {
     }
 
     public function getListorders($customer,$phone,$status,$limit, $offset) {
-        $this->db->select('orders.*,customers.email as customer_email,
-							customers.name as customer_name,
-							customers.phone as customer_phone, 
-							customers.address as customer_address,
-							affiliate_transactions.user_id as user_id,
-							affiliate_transactions.amount as commission,
-							users.name as user_name,
-							users.id as user_id,
+        $this->db->select('orders.*,customers.email as customer_email,customers.name as customer_name,customers.phone as customer_phone, customers.address as customer_address,
+							affiliate_transactions.user_id as user_id,affiliate_transactions.amount as commission,
+							users.name as user_name,users.id as user_id,
 						');
         $this->db->join('customers', 'orders.customer_id = customers.id', 'left');
         $this->db->join('affiliate_transactions', 'orders.affiliate_transaction_id = affiliate_transactions.id', 'left');

@@ -51,7 +51,8 @@
                                 <label class="col-sm-2 control-label">Loại bài viết</label>
                                 <div class="col-sm-10">
 									<select name="type" class="form-control">
-										<option value="default" <?php if($news->type=='default'){echo 'selected="selected" ';}?>>Mặc định</option>
+										<option value="default" <?php if($news->type=='post'){echo 'selected="selected" ';}?>>Mặc định</option>
+										<option value="landing" <?php if($news->type=='page'){echo 'selected="selected" ';}?>>Trang</option>
 										<option value="landing" <?php if($news->type=='landing'){echo 'selected="selected" ';}?>>Landing Page</option>
 									</select>
 								</div>
@@ -116,7 +117,7 @@
 										}
 									?>
 									<label class="checkbox">
-										<input type="checkbox" name="categoryid[]" data-toggle="checkbox" value="<?=@$cat_item['id']?>" <?php if (in_array($cat_item['id'],$news->categoryid)) {echo 'checked';}?>> <?=@$indent.$cat_item['title'] ?>
+										<input type="checkbox" name="category[]" data-toggle="checkbox" value="<?=@$cat_item['id']?>" <?php if (in_array($cat_item['id'],$news->categoryid)) {echo 'checked';}?>> <?=@$indent.$cat_item['title'] ?>
 									</label>
 									<?php } ?>
 								</div>

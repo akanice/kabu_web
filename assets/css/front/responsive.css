@@ -74,7 +74,7 @@
     max-width: 970px;
   }
   .sw-best-seller-product .wrap-content .item {
-    margin-bottom: 27px;
+    margin-bottom: 3px;
   }
   .container-home4 .wpb_wrapper {
     max-width: 970px;
@@ -3110,6 +3110,7 @@
 	}
 	.sw-category-slider .responsive .item-product-cat {
 		padding: 0 5px;
+		width: 22%;
 	}
 	.sw-category-slider .responsive .item-product-cat .item-content h3 {
 		box-shadow: none;
@@ -3148,5 +3149,18 @@
 		color: #fff;
 		margin: 0;
 		padding: 9px;
+	}
+	.sidebar {
+		order: 1;
+	}
+	.revo_breadcrumbs .breadcrumbs .breadcrumb {
+		padding-left:10px;
+	}
+	.header-top {
+		display: none;
+	}
+	.category_content {
+		border-top:1px solid #f2f2f2;
+		padding: 0;
 	}
 }

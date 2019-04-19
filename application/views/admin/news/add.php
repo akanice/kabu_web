@@ -42,7 +42,8 @@
                                 <label class="col-sm-2 control-label">Loại bài viết</label>
                                 <div class="col-sm-10">
                                     <select name="type" class="form-control">
-										<option value="default" selected>Mặc định</option>
+										<option value="post" selected>Mặc định</option>
+										<option value="page">Trang</option>
 										<option value="landing">Landing Page</option>
 									</select>
                                 </div>

@@ -1,8 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Home extends MY_Controller {
-    private $data;
-
     function __construct() {
         parent::__construct();
 
@@ -53,61 +51,9 @@ class Home extends MY_Controller {
         $this->load->model('newscategorymodel');
         $this->load->model('configsmodel');
 
-        // load config data
-        $configs = array();
-        $this->data['cat_available'] = $configs['cat_available'] = $this->configsmodel->read(array('name' => 'cat_available'), array(), true)->value;
-
-        //meta data
-        $this->data['title'] = @$options['home_meta_title']->value;
-        $this->data['meta_title'] = @$options['home_meta_title']->value;
-        $this->data['meta_description'] = @$options['home_meta_description']->value;
-        $this->data['meta_keywords'] = @$options['home_meta_keywords']->value;
-
-        $this->load->view('home/common/header', $this->data);
-
-        // Slider data
-        $this->data['section_sliders'] = array();
-        for ($i = 1; $i <= 5; $i++) {
-            $item_id = $this->configsmodel->read(array(
-                'term'    => 'home',
-                'name'    => 'slider_block',
-                'term_id' => $i), array(), true)->value;
-            $item = $this->newsmodel->read(array('id' => $item_id), array(), true);
-            if ($item) $this->data['section_sliders'][] = $item;
-        }
-
-        $this->load->view('home/template/home_slider', $this->data);
-        //sections data
-        $this->data['section_news'][] = new \stdClass;
-        foreach (json_decode($configs['cat_available']) as $item) {
-            $this->data['section_news']['parent_cat'] = $this->newscategorymodel->read(array('id' => $item), array(), true);
-            $this->data['section_news']['child_cat'] = $this->newscategorymodel->read(array('parent_id' => $item), array(), false);
-
-            $featured_new = $this->configsmodel->read(array(
-                'term'    => 'category',
-                'name'    => 'featured_new',
-                'term_id' => $item), array(), true)->value;
-            if ($featured_new) {
-                $array = json_decode($featured_new);
-                $this->data['section_news']['news_featured'] = $this->newsmodel->read(array("id" => $array), array(), false, false);
-            }
-            $this->data['section_news']['news_item'] = $this->newsmodel->get_random_news_single($item, 2);
-            $this->data['section_news']['slogan'] = $this->configsmodel->read(array(
-                "term"    => "category",
-                "name"    => "slogan",
-                "term_id" => $item), array(), true);
-			$this->data['section_news']['banner'] = $this->configsmodel->read(array(
-                "term"    => "category",
-                "name"    => "banner",
-                "term_id" => $item), array(), true);
-            $this->data['section_news_content'] = $this->load->view('home/template/section_news', $this->data);
-        }
-		
-        //print_r($this->data['section_news']['news_featured']);
-        // print_r($this->data['section_news'][1]['news_item']);
-        // die();
-
-        $this->load->view('home/common/footer');
+        $this->data['title'] = $this->optionsmodel->read(array('name'=>'home_meta_title'), array(), true)->value;
+        $this->data['temp'] = 'frontend/home/index';
+		$this->load->view('frontend/index', $this->data);
     }
 
     public function pages($alias) {

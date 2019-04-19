@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Products extends MY_Controller{
-    private $data;
+    public $data;
     function __construct() {
         parent::__construct();
         $this->auth = new Auth();
@@ -30,9 +30,9 @@ class Products extends MY_Controller{
 		$per_page = 15;
         list($this->data['page_links'],$start) = $this->productsmodel->pagination('admin/products/',$total,$per_page,3);
         if($this->data['name'] != ""){
-            $this->data['list'] = $this->productsmodel->getListProducts($this->input->get('title'),$per_page,$start);
+            $this->data['list'] = $this->productsmodel->getListProducts($this->input->get('title'),'',$per_page,$start);
         }else{
-            $this->data['list'] = $this->productsmodel->getListProducts("",$per_page,$start);
+            $this->data['list'] = $this->productsmodel->getListProducts("",'',$per_page,$start);
         }
         $this->data['base'] = site_url('admin/products/');
         $this->load->view('admin/common/header',$this->data);

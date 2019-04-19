@@ -2,7 +2,7 @@
 
 
 class override_404 extends MY_Controller{
-    private $data;
+    public $data;
     function __construct() {
         parent::__construct();
 		

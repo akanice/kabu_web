@@ -2,7 +2,7 @@
 
 
 class Users extends MY_Controller{
-    private $data;
+    public $data;
     function __construct() {
         parent::__construct();
         $this->auth = new Auth();

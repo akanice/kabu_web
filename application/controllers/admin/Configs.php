@@ -2,7 +2,7 @@
 
 
 class Configs extends MY_Controller {
-    private $data;
+    public $data;
 
     function __construct() {
         parent::__construct();
@@ -143,7 +143,7 @@ class Configs extends MY_Controller {
 
     public function editHomeSlider() {
         $this->load->model('newsmodel');
-        $this->data['news'] = $this->newsmodel->read(array('type' => 'default'), array('id' => false), false);
+        $this->data['news'] = $this->newsmodel->read(array('type' => 'post'), array('id' => false), false);
         $this->data['slider_block_new'] = $this->configsmodel->read(array(
             'term' => 'home',
             'name' => 'slider_block'));
@@ -161,7 +161,7 @@ class Configs extends MY_Controller {
 
             // Update new data
             $this->data['notice'] = 'Cập nhật thành cmn công!';
-            $this->data['news'] = $this->newsmodel->read(array('type' => 'default'), array('id' => false), false);
+            $this->data['news'] = $this->newsmodel->read(array('type' => 'post'), array('id' => false), false);
             $this->data['slider_block_new'] = $this->configsmodel->read(array(
                 'term' => 'home',
                 'name' => 'slider_block'));

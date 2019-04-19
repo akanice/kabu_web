@@ -84,14 +84,18 @@ $route['search']												=	"news/news_search";
 $route['search/page/(:num)']							=	"news/news_search/$1";
 
 // Front-end routes
-$route['category'] 											= 	"news/cat_index";
-$route['category/(:any)']									=	"news/category/$1";
-$route['category/(:any)/(:num)']						=	"news/category/$1/$2";
+$route['blog'] 													= 	"news/home";
+$route['blog/category'] 									= 	"news/cat_index";
+$route['blog/category/(:any)']							=	"news/category/$1";
+$route['blog/category/(:any)/(:num)']				=	"news/category/$1/$2";
+$route['blog/(:any)'] 										= 	"news/index/$1";
 
-$route['page/(:any)'] 										= 	"home/page";
+$route['shop'] 												= 	"products/index";
+$route['danh-muc/(:any)']								=	"products/category/$1";
+$route['danh-muc/(:any)/(:num)']					=	"products/category/$1/$2";
+
 $route['affiliate-user']									=	"user/main/affiliateUserInfo";
 $route['dang-nhap']										=	"user/main/loginUser";
 $route['dang-ky']											=	"user/main/signUpUser";
 $route['dang-ky-thanh-cong']							=	"user/main/regSuccessfully";
 $route['dang-xuat']											=	"user/main/logoutUser";
-$route['(:any)'] 												= 	"news/index/$1";

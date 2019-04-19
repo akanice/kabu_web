@@ -2,7 +2,7 @@
 
 
 class News extends MY_Controller{
-    private $data;
+    public $data;
     function __construct() {
         parent::__construct();
         $this->auth = new Auth();
@@ -57,9 +57,9 @@ class News extends MY_Controller{
         $start = ($page_number - 1) * $config['per_page'];
         $this->data['page_links'] = $this->pagination->create_links();
         if($this->data['title'] != "" || $this->data['category'] != ""){
-            $this->data['list'] = $this->newsmodel->getListNews($this->input->get('title'),"",$this->input->get('category'),$config['per_page'],$start);
+            $this->data['list'] = $this->newsmodel->getListNews($this->input->get('title'),"",$this->input->get('category'),$config['per_page'],$start,'post');
         }else{
-            $this->data['list'] = $this->newsmodel->getListNews("","","",$config['per_page'],$start);
+            $this->data['list'] = $this->newsmodel->getListNews("","","",$config['per_page'],$start,'post');
         }
 		
         $this->data['base'] = site_url('admin/news/');
@@ -140,7 +140,7 @@ class News extends MY_Controller{
 
     public function edit($id) {
 		$this->data['title']    = 'Sửa bài viết';
-		$this->data['newscategory'] = $this->newscategorymodel->getSortedCategories();
+		$this->data['list_cat_id'] = $this->newscategorymodel->getSortedCategories();
         $this->data['news'] = $this->newsmodel->read(array('id'=>$id),array(),true);
 		$this->data['news']->categoryid = json_decode($this->data['news']->categoryid);
         if($this->input->post('submit') != null){

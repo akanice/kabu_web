@@ -2,7 +2,7 @@
 
 
 class NewsCategory extends MY_Controller{
-    private $data;
+    public $data;
     function __construct() {
         parent::__construct();
         $this->auth = new Auth();
@@ -137,65 +137,6 @@ class NewsCategory extends MY_Controller{
             $this->load->view('admin/common/footer');
         }
     }
-
-	public function setorder($id='') {
-		$this->data['title'] = 'Sửa chuyên mục bài viết';
-		$this->load->model('newsmodel');
-		$this->load->model('newsordermodel');
-		
-		if ($id && $id !=='') {
-			$this->data['news_array'] = $this->newsordermodel->read(array('categoryid' => $id), array(), true);
-			$this->data['news_array'] = json_decode($this->data['news_array']->news_array, true);
-			$this->data['category'] = $this->newscategorymodel->read(array('id'=>$id));
-			$this->data['cat_id'] = $id;
-			$this->data['news'] = $this->newsmodel->getNewsByCategoryId($id, '', '');
-			if ($this->input->post('submit') != null) {
-				if ($this->input->post('news_array')) {
-					$value = $this->input->post('news_array');
-					$data = array(
-						'news_array' => json_encode($value),
-					);
-					$this->newsordermodel->update($data, array('categoryid' => $id));
-				}
-				$this->data['news_array'] = $this->newsordermodel->read(array('categoryid' => $id), array(), true);
-				$this->data['news_array'] = json_decode($this->data['news_array']->news_array, true);
-				
-				$this->load->view('admin/common/header',$this->data);
-				$this->load->view('admin/newscategory/setorder');
-				$this->load->view('admin/common/footer');
-			} else {
-				// Re-data
-				$this->data['news_array'] = $this->newsordermodel->read(array('categoryid' => $id), array(), true);
-				$this->data['news_array'] = json_decode($this->data['news_array']->news_array, true);
-				$this->load->view('admin/common/header',$this->data);
-				$this->load->view('admin/newscategory/setorder');
-				$this->load->view('admin/common/footer');
-			}
-		} else {
-			// General page
-			
-			$categories_data = $this->newsordermodel->read(array(),array(),false);
-			foreach ($categories_data as $key=>$catItem) {
-				if ($catItem->news_array && $catItem->news_array != null) {
-					$catItem->news_array = json_decode($catItem->news_array);
-					$news_cat_data[$key]['catdata']['id'] = $catItem->categoryid;
-					$news_cat_data[$key]['catdata']['title'] = $this->newscategorymodel->read(array('id'=>$catItem->categoryid),array(),true)->title;
-					$news_cat_data[$key]['catdata']['alias'] = $this->newscategorymodel->read(array('id'=>$catItem->categoryid),array(),true)->alias;
-					foreach ($catItem->news_array as $newID) {
-						if ($newID != '0') {
-							$news_cat_data[$key]['newsdata'][] = $this->newsmodel->read(array('id'=>$newID),array(),true)->title;
-						}
-					}
-				}
-			}
-			$this->data['news_cat_data'] = $news_cat_data;
-			//print_r($news_cat_data);die();
-			//$this->data['newscategory'] = $this->newscategory->getNewsOrderedInCat();
-			$this->load->view('admin/common/header',$this->data);
-            $this->load->view('admin/newscategory/setorder_list');
-            $this->load->view('admin/common/footer');
-		}
-	}
 	
     public function delete($id){
         if(isset($id)&&($id>0)&&is_numeric($id)){

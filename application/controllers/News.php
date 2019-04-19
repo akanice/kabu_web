@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class News extends MY_Controller {
-    private $data;
+    public $data;
 
     function __construct() {
         parent::__construct();
@@ -12,14 +12,22 @@ class News extends MY_Controller {
             $this->load->model('usersmodel');
             $this->data['user_profile'] = $this->usersmodel->read(array('id' => $this->data['affiliate_user']['id']), array(), true);
         }
-        //Get Menu
+        //Get Menu 
         $this->load->model('menusmodel');
 
+		// nav menu
         $nav_data = $this->menusmodel->read(array('menu_id' => '1'));
         $this->data['navmenu'] = json_decode(json_encode($nav_data), true);
+		// footer menu
+		$footer_data = $this->menusmodel->read(array('menu_id' => '2'));
+        $this->data['footer_menu'] = json_decode(json_encode($footer_data), true);		
         $this->data['footermenu'] = $this->menusmodel->read(array('menu_id' => 2));
+		
         $this->data['config_navmenu'] = $this->menusmodel->setup_navmenu();
         $this->data['config_mobilemenu'] = $this->menusmodel->setup_mobilemenu();
+		
+		$this->load->model('newsmodel');
+		$this->data['newest_articles'] = $this->newsmodel->read(array(),array('id'=>false),false,5);
 
         //print_r($this->data['config_navmenu']);die();
         $this->load->model('menustermmodel');
@@ -42,6 +50,7 @@ class News extends MY_Controller {
         $this->data['global_footer_code'] = @$options['global_footer_code']->value;
 
         $this->load->model('newsmodel');
+        $this->load->model('newsordermodel');
         $this->load->model('newscategorymodel');
 		
 		$this->load->model('landingpagemodel');
@@ -99,21 +108,84 @@ class News extends MY_Controller {
                 $this->data['author'] = $this->adminsmodel->read(array('id' => $author_id), array(), true);
                 $this->data['most_viewed'] = $this->newsmodel->read(array(), array('count_view' => false), false, 5);
                 $this->data['related_news'] = $this->newsmodel->getRelatedNews($cat_chosen, 5);
-                $this->load->view('home/common/header', $this->data);
-                $this->load->view('home/news_detail');
-                $this->load->view('home/common/footer');
+                $this->load->view('blog/common/header', $this->data);
+                $this->load->view('blog/news_detail');
+                $this->load->view('blog/common/footer');
             } else {
                 $this->data['title'] = $this->data['new']->title;
                 $this->data['landing_data'] = $this->landingpagemodel->read(array('news_id' => $new_id), array(), true);
-                $this->load->view('home/common/header_landing', $this->data);
-                $this->load->view('home/template/landing_page');
-                $this->load->view('home/common/footer_landing');
+                $this->load->view('blog/common/header_landing', $this->data);
+                $this->load->view('blog/template/landing_page');
+                $this->load->view('blog/common/footer_landing');
             }
         } else {
             redirect('404_override');
         }
     }
 
+	public function home() {
+        $this->load->model('newsmodel');
+        $this->load->model('newscategorymodel');
+        $this->load->model('configsmodel');
+
+        // load config data
+        $configs = array();
+        $this->data['cat_available'] = $configs['cat_available'] = $this->configsmodel->read(array('name' => 'cat_available'), array(), true)->value;
+
+        //meta data
+		
+        $this->data['title'] = @$this->optionsmodel->read(array('name'=>'home_meta_title'),array(),true)->value;
+        $this->data['meta_title'] = @$this->optionsmodel->read(array('name'=>'home_meta_title'),array(),true)->value;
+        $this->data['home_meta_description'] = @$this->optionsmodel->read(array('name'=>'home_meta_description'),array(),true)->value;
+        $this->data['home_meta_keywords'] = @$this->optionsmodel->read(array('name'=>'home_meta_keywords'),array(),true)->value;
+
+        $this->load->view('blog/common/header', $this->data);
+
+        // Slider data
+        $this->data['section_sliders'] = array();
+        for ($i = 1; $i <= 5; $i++) {
+            $item_id = $this->configsmodel->read(array(
+                'term'    => 'home',
+                'name'    => 'slider_block',
+                'term_id' => $i), array(), true)->value;
+            $item = $this->newsmodel->read(array('id' => $item_id), array(), true);
+            if ($item) $this->data['section_sliders'][] = $item;
+        }
+
+        $this->load->view('blog/template/home_slider', $this->data);
+        //sections data
+        $this->data['section_news'][] = new \stdClass;
+        foreach (json_decode($configs['cat_available']) as $item) {
+            $this->data['section_news']['parent_cat'] = $this->newscategorymodel->read(array('id' => $item), array(), true);
+            $this->data['section_news']['child_cat'] = $this->newscategorymodel->read(array('parent_id' => $item), array(), false);
+
+            $featured_new = $this->configsmodel->read(array(
+                'term'    => 'category',
+                'name'    => 'featured_new',
+                'term_id' => $item), array(), true)->value;
+            if ($featured_new) {
+                $array = json_decode($featured_new);
+                $this->data['section_news']['news_featured'] = $this->newsmodel->read(array("id" => $array), array(), false, false);
+            }
+            $this->data['section_news']['news_item'] = $this->newsmodel->get_random_news_single($item, 2);
+            $this->data['section_news']['slogan'] = $this->configsmodel->read(array(
+                "term"    => "category",
+                "name"    => "slogan",
+                "term_id" => $item), array(), true);
+			$this->data['section_news']['banner'] = $this->configsmodel->read(array(
+                "term"    => "category",
+                "name"    => "banner",
+                "term_id" => $item), array(), true);
+            $this->data['section_news_content'] = $this->load->view('blog/template/section_news', $this->data);
+        }
+		
+        //print_r($this->data['section_news']['news_featured']);
+        // print_r($this->data['section_news'][1]['news_item']);
+        // die();
+
+        $this->load->view('blog/common/footer');
+    }
+	
     function add_count($alias) {
         // load cookie helper
         $this->load->helper('cookie');
@@ -139,17 +211,16 @@ class News extends MY_Controller {
 
     public function category($alias) {
         $this->data['news_category'] = $news_category = $this->newscategorymodel->read(array('alias' => $alias), array(), true);
-		$this->load->model('newsordermodel');
 		$news_array = $this->newsordermodel->read(array('categoryid'=>$this->data['news_category']->id),array(),true)->news_array;
 		$news_array = json_decode($news_array);
         $total = $this->newsmodel->readCountNew($news_category->id);
         $per_page = 12;
         $this->configPagination($slug = 'category', $per_page, $alias, $total);
-        $page_number = $this->uri->segment(3);
+        $page_number = $this->uri->segment(4);
         if (empty($page_number)) $page_number = 1;
         $start = ($page_number - 1) * $per_page;
         $this->data['page_links'] = $this->pagination->create_links();
-        $this->data['news'] = $this->newsmodel->getListNews('', $news_array, $news_category->id, $per_page, $start);
+        $this->data['news'] = $this->newsmodel->getListNews('', $news_array, $news_category->id, $per_page, $start,'post');
         if (empty($news_category->title)) {
             $this->data['title'] = 'Chuyên mục';
         } else {
@@ -161,12 +232,12 @@ class News extends MY_Controller {
         $this->data['meta_keywords'] = $news_category->meta_keywords;
         $this->data['meta_description'] = $news_category->meta_description;
 
-        $this->load->view('home/common/header', $this->data);
-        $this->load->view('home/news_list');
-        $this->load->view('home/common/footer');
+        $this->load->view('blog/common/header', $this->data);
+        $this->load->view('blog/news_list');
+        $this->load->view('blog/common/footer');
     }
 
-    private function configPagination($slug, $per_page = 9, $alias, $total) {
+    public function configPagination($slug, $per_page = 9, $alias, $total) {
         $this->load->library('pagination');
         $config['base_url'] = base_url() . $slug . '/' . $alias;
         $config['total_rows'] = $total;
@@ -212,9 +283,9 @@ class News extends MY_Controller {
         //print_r($this->data['result']);die();
         $this->data['title'] = 'Search: ' . $this->input->get('s_keyword');
 
-        $this->load->view('home/common/header', $this->data);
-        $this->load->view('home/news_search');
-        $this->load->view('home/common/footer');
+        $this->load->view('blog/common/header', $this->data);
+        $this->load->view('blog/news_search');
+        $this->load->view('blog/common/footer');
     }
 
     private function banner_bottom($post_id) {

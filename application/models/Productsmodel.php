@@ -101,9 +101,10 @@ class ProductsModel extends MY_Model {
         $this->checkTableDefine();
     }
 
-    public function getListProducts($title,$limit,$offset) {
+    public function getListProducts($title,$array_cat,$limit,$offset) {
         $this->db->select('products.*,products_category.title as cat_name');
 		$this->db->join('products_category','products_category.id = products.categoryid', 'left');
+		$this->db->where_in('products_category.id', $array_cat);
         $this->db->like('products.title', $title);
 		$this->db->order_by("id","DESC");
         if ($limit != "") {
@@ -112,15 +113,6 @@ class ProductsModel extends MY_Model {
         if ($query->num_rows() > 0) {
 			return $result = $query->result();
 		}
-        return false;
-    }
-	
-    public function getCountproducts($title) {
-        $this->db->select('*');
-        $this->db->from('products');
-        $this->db->like('products.title', $title);
-		$this->db->order_by("id","DESC");
-        return $this->db->count_all_results();
         return false;
     }
 	
@@ -153,21 +145,20 @@ class ProductsModel extends MY_Model {
 		}
 	}
 	
-	public function getCountProduct($title,$category="",$limit,$offset){
+	public function getProductsByCategoryId($title,$category_id="",$per_page,$start){
         $this->db->select('products.*');
-        $this->db->like('products.title', $title);
-		$this->db->order_by("id","DESC");
-        if($category != "") {
-            $this->db->where('products.tour_cat_id', $category);
-        }
-        return $this->db->count_all_results();
+		$temp = $this->db->get("products")->result();
+		// $product_array[] = new stdClass();
+		foreach ($temp as $key=>$value) {
+			$cat_array = json_decode($value->categoryid);
+			$values[] = $value;
+			if (in_array($category_id,$cat_array)) {
+				// print_r($k);
+				// echo '<br>';
+				$product_array[] = $value;
+			}
+		}
+		return $product_array;
     }
 	
-	public function getProductByDeviceId($id_device) {
-		$this->db->select('products.*,products.id as pro_id');
-		$this->db->like('products.id_device',$id_device);
-		$this->db->order_by('sell_price','ASC');
-		$query = $this->db->get('products');
-		if ($query->num_rows()>0) return $query->result();
-	}
 }

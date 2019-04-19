@@ -710,6 +710,7 @@ ul.menu, .dropdown ul {
 }
 .sw-category-slider .responsive .item-product-cat {
     padding: 0 15px;
+	width: 14.285%;
 }
 .sw-category-slider .responsive .item-product-cat .item-content h3 {
     box-shadow: 0px 2px 3px 0px rgba(100,100,100,0.3);
