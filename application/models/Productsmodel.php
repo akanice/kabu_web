@@ -104,8 +104,12 @@ class ProductsModel extends MY_Model {
     public function getListProducts($title,$array_cat,$limit,$offset) {
         $this->db->select('products.*,products_category.title as cat_name');
 		$this->db->join('products_category','products_category.id = products.categoryid', 'left');
-		$this->db->where_in('products_category.id', $array_cat);
-        $this->db->like('products.title', $title);
+		if ($array_cat) {
+			$this->db->where_in('products_category.id', $array_cat);
+		}
+		if ($title) {
+			$this->db->like('products.title', $title);
+		}
 		$this->db->order_by("id","DESC");
         if ($limit != "") {
             $query = $this->db->get('products', $limit, $offset);
@@ -147,16 +151,24 @@ class ProductsModel extends MY_Model {
 	
 	public function getProductsByCategoryId($title,$category_id="",$per_page,$start){
         $this->db->select('products.*');
+		if ($title) {
+			$this->db->like('products.title',$title);
+		}
 		$temp = $this->db->get("products")->result();
-		// $product_array[] = new stdClass();
-		foreach ($temp as $key=>$value) {
-			$cat_array = json_decode($value->categoryid);
-			$values[] = $value;
-			if (in_array($category_id,$cat_array)) {
-				// print_r($k);
-				// echo '<br>';
-				$product_array[] = $value;
-			}
+		$product_array = array();
+		$cat_array = array();
+		if ($category_id) {
+			foreach ($temp as $key=>$value) {
+				$cat_array = json_decode($value->categoryid);
+				$values[] = $value;
+				if (in_array($category_id,$cat_array)) {
+					// print_r($k);
+					// echo '<br>';
+					$product_array[] = $value;
+				}
+			} 
+		} else {
+			$product_array = $temp;
 		}
 		return $product_array;
     }

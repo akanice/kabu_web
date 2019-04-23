@@ -4,15 +4,8 @@ class News extends MY_Controller {
     public $data;
 
     function __construct() {
-        parent::__construct();
-        $this->load->library('auth');
-        $this->auth = new Auth();
-        if ($this->auth->isUserLogin()) {
-            $this->data['affiliate_user'] = $this->auth->getUser();
-            $this->load->model('usersmodel');
-            $this->data['user_profile'] = $this->usersmodel->read(array('id' => $this->data['affiliate_user']['id']), array(), true);
-        }
-        //Get Menu 
+        parent::__construct();  
+		//Get Menu 
         $this->load->model('menusmodel');
 
 		// nav menu

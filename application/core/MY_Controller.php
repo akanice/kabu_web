@@ -18,6 +18,15 @@ class MY_Controller extends MX_Controller {
 		$this->_checkAdmin();
 	}
 	public function optionData() {
+		// auth
+		$this->load->library('auth');
+        $this->auth = new Auth();
+        if ($this->auth->isUserLogin()) {
+            $this->data['affiliate_user'] = $this->auth->getUser();
+            $this->load->model('usersmodel');
+            $this->data['user_profile'] = $this->usersmodel->read(array('id' => $this->data['affiliate_user']['id']), array(), true);
+        }
+		
 		//Get Menu 
 		$this->load->model('menusmodel');
 

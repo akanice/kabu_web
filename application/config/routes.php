@@ -93,6 +93,7 @@ $route['blog/(:any)'] 										= 	"news/index/$1";
 $route['shop'] 												= 	"products/index";
 $route['danh-muc/(:any)']								=	"products/category/$1";
 $route['danh-muc/(:any)/(:num)']					=	"products/category/$1/$2";
+$route['san-pham/(:any)']								=	"products/view/$1/";
 
 $route['affiliate-user']									=	"user/main/affiliateUserInfo";
 $route['dang-nhap']										=	"user/main/loginUser";

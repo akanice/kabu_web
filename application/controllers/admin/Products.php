@@ -22,7 +22,7 @@ class Products extends MY_Controller{
         $this->data['productcategory']    = $this->productscategorymodel->read();
 		$this->data['name'] = $this->input->get('title');
 		$this->data['category'] = $this->input->get('category');
-        $total = $this->productsmodel->getCountProducts($this->input->get('title'));
+        $total = count($this->productsmodel->getProductsByCategoryId($this->input->get('title'),'','',''));;
         if($this->data['name'] != ""){
             $config['suffix'] = '?name='.urlencode($this->data['name']);
         }
@@ -32,7 +32,7 @@ class Products extends MY_Controller{
         if($this->data['name'] != ""){
             $this->data['list'] = $this->productsmodel->getListProducts($this->input->get('title'),'',$per_page,$start);
         }else{
-            $this->data['list'] = $this->productsmodel->getListProducts("",'',$per_page,$start);
+            $this->data['list'] = $this->productsmodel->getListProducts('','',$per_page,$start);
         }
         $this->data['base'] = site_url('admin/products/');
         $this->load->view('admin/common/header',$this->data);
@@ -60,7 +60,7 @@ class Products extends MY_Controller{
 			$gallery = $this->upload_file->upload_file($upload_path, 'gallery');
 			$gallery = json_encode($gallery);
 			$categories = json_encode($this->input->post("categoryid"));
-			if (!$categories) {$categories = '["0"]';}
+			if (!$categories || $categories == '') {$categories = '["0"]';}
 			
 			$data = array(
 				"title"							=> $this->input->post("title"),
@@ -157,14 +157,10 @@ class Products extends MY_Controller{
 		$this->load->view('admin/common/footer');
 	}
     public function delete($id){
-		if (in_array($this->data['admingroup'],$this->data['groups_permission'])) {
-			if(isset($id)&&($id>0)&&is_numeric($id)){
-				$this->productsmodel->delete(array('id'=>$id));
-				redirect(base_url() . "admin/products");
-				exit();
-			}
-		} else {
-			redirect(base_url()."admin/access_denied");
+		if(isset($id)&&($id>0)&&is_numeric($id)){
+			$this->productsmodel->delete(array('id'=>$id));
+			redirect(base_url() . "admin/products");
+			exit();
 		}
     }
 

@@ -136,7 +136,11 @@ class MY_Model extends CI_Model {
 			if(!$this->image_lib->resize()){
 				print $this->image_lib->display_errors();
 			}else{
-				return $thumb = $upload_path . basename($_FILES['image']['name'], '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION)) . '_.'.$config2['width'].'x'.$config2['height'] . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+				// preg_match('/(?<extension>\.\w+)$/im', $image, $matches);
+				// $extension = $matches['extension'];
+				// $thumbnail = preg_replace('/(\.\w+)$/im', '', $image) . '_thumb' . $extension;
+				// return $thumbnail;
+				return $thumb = $upload_path . basename($image, '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION)) . '_thumb.'. pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 			}
 		} else {
 			return $thumb = 'assets/img/sample_thumb.png';
