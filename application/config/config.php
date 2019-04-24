@@ -141,7 +141,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -530,3 +530,7 @@ $config['proxy_ips'] = '';
 $config['no_login_redirect'] = '/';
 $config['loged_in_redirect'] = '/';
 $config['login_fail_redirect'] = '/';
+
+$config['jwt_key'] = '!@#$%^&*()_';
+$config['facebook_app_id'] = '752228971569672';
+$config['facebook_app_secret'] = '3779ea3d5736f2a7ae9d81215a524d3b';

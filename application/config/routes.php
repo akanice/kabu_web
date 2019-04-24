@@ -100,3 +100,10 @@ $route['dang-nhap']										=	"user/main/loginUser";
 $route['dang-ky']											=	"user/main/signUpUser";
 $route['dang-ky-thanh-cong']							=	"user/main/regSuccessfully";
 $route['dang-xuat']											=	"user/main/logoutUser";
+
+
+// API routes
+$route['api/register'] = 'api/login/register';
+$route['api/login/regular'] = 'api/login/regular';
+$route['api/login/facebook'] = 'api/login/facebook';
+$route['api/me'] = 'api/login/me';
