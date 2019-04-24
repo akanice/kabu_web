@@ -532,5 +532,5 @@ $config['loged_in_redirect'] = '/';
 $config['login_fail_redirect'] = '/';
 
 $config['jwt_key'] = '!@#$%^&*()_';
-$config['facebook_app_id'] = '752228971569672';
-$config['facebook_app_secret'] = '3779ea3d5736f2a7ae9d81215a524d3b';
+$config['facebook_app_id'] = '';
+$config['facebook_app_secret'] = '';
